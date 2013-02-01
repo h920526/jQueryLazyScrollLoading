@@ -1,0 +1,36 @@
+{
+	"name": "jQueryLazyScrollLoading",
+	"title": "jQueryLazyScrollLoading",
+	"description": "Demo: http://dl.dropbox.com/u/8316573/jquerylazyscrollloading/index.html",
+	"keywords": [
+		"lazy",
+		"lazyloading",
+		"lazyscrollloading",
+		"jquerylazyscrollloading",
+		"lazyimage",
+		"lazyload",
+		"loading",
+		"load",
+		"lazyscroll",
+		"viewport",
+		"scrollviewport"
+	],
+	"version": "0.3.1",
+	"author": {
+		"name": "h920526",
+		"url": "https://github.com/h920526"
+	},
+	"licenses": [
+		{
+		"type": "Apache License 2.0",
+		"url": "http://www.apache.org/licenses/LICENSE-2.0"
+		}
+	],
+	"bugs": "http://code.google.com/p/jquerylazyscrollloading/issues/list",
+	"homepage": "http://code.google.com/p/jquerylazyscrollloading/",
+	"docs": "http://code.google.com/p/jquerylazyscrollloading/wiki/jQueryLazyScrollLoadingPluginDoc",
+	"download": "http://code.google.com/p/jquerylazyscrollloading/downloads/list",
+	"dependencies": {
+		"jquery": ">=1.2"
+	}
+}
