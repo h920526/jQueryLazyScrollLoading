@@ -1,5 +1,11 @@
 jQueryLazyScrollLoading Change Log
 
+Version 0.4.0
+====================
+．Add onScroll, onScrollVertically, onScrollHorizontally, onScrollUp, onScrollDown, onScrollLeft, onScrollRight
+．Rename scrollLeft and scrollTop to getScrollLeft and getScrollTop at getLazyScrollLoadingViewport
+．Fix bug for jQuery 1.9
+
 Version 0.3.1
 ====================
 ．Add getLazyScrollLoadingViewport

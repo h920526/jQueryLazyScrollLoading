@@ -32,17 +32,20 @@ fieldset {
 	-khtml-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
+	/* for IE9/10.. */
+	margin-top: 15px;
 }
 
-legend {
-	padding: 10px 5px;
-	font-size: small;
+/* for IE9/10.. */
+fieldset span.legend {
+	color: #4578D4;
+	font-size: 12px;
 	font-weight: bold;
-	text-decoration: underline;
-}
-
-legend a {
-	color: blue;
+	background-color: white;
+	position: relative;
+	top: -8px;
+	padding: 3px 15px;
+	cursor: pointer;
 }
 
 pre {
@@ -114,11 +117,8 @@ li.lazyItem {
 	<!-- ============================================================================================================== -->
 
 	<fieldset>
-		<legend>
-			<a href="javascript: void(0);"
-				onclick="$(this.parentNode).next().slideToggle('slow');">Simple
-				Demo: </a>
-		</legend>
+		<span class="legend" onclick="$(this).next().slideToggle('slow');">Simple
+			Demo:</span>
 		<div>
 			<ul id="lazyScrollLoading">
 				<li class="lazyItem" lazy-text="Lazy Item 1">&nbsp;</li>
@@ -180,11 +180,10 @@ $(document).ready(function() {
 	<!-- ============================================================================================================== -->
 
 	<fieldset>
-		<legend>
-			<a href="javascript: void(0);"
-				onclick="$(this.parentNode).next().slideToggle('slow');$('#lazyScrollLoading_ImageMode').trigger('scroll');">Simple
-				Demo: Image Mode</a> <small>(copy attribute lazy-img into src)</small>
-		</legend>
+		<span class="legend"
+			onclick="$(this).next().slideToggle('slow');$('#lazyScrollLoading_ImageMode').trigger('scroll');">Simple
+			Demo: Image Mode <small>(copy attribute lazy-img into src)</small>
+		</span>
 		<div style="display: none;">
 			<ul id="lazyScrollLoading_ImageMode">
 				<li><img lazy-img="http://image_url_1" alt="Image1" /></li>
@@ -216,11 +215,8 @@ $(document).ready(function() {
 	<!-- ============================================================================================================== -->
 
 	<fieldset>
-		<legend>
-			<a href="javascript: void(0);"
-				onclick="$(this.parentNode).next().slideToggle('slow');">Simple
-				Demo: Scroll Event</a>
-		</legend>
+		<span class="legend" onclick="$(this).next().slideToggle('slow');">Simple
+			Demo: Scroll Event</span>
 		<div style="display: none;">
 			<ul id="lazyScrollLoading_ScrollEvent"
 				style="width: 300px; height: 200px;">
@@ -276,11 +272,8 @@ $(document).ready(function() {
 	<!-- ============================================================================================================== -->
 
 	<fieldset>
-		<legend>
-			<a href="javascript: void(0);"
-				onclick="$(this.parentNode).next().slideToggle('slow');">Simple
-				Demo: Window Scroll To End</a>
-		</legend>
+		<span class="legend" onclick="$(this).next().slideToggle('slow');">Simple
+			Demo: Window Scroll To End</span>
 		<div style="display: none;">
 			<ul id="lazyScrollLoading_WindowScrollToEnd" class="notBox">
 				<li>Lazy Item</li>
@@ -302,10 +295,10 @@ $(document).ready(function() {
 			<br />
 			<script type="text/javascript">
 				$(document).ready(function() {
+					var $container = $("#lazyScrollLoading_WindowScrollToEnd");
 					$(window).lazyScrollLoading({
-						lazyItemSelector : "#lazyScrollLoading_WindowScrollToEnd > li",
 						onScrollToBottom : function(e, $lazyItems) {
-							$lazyItems.parent().append($("<li>New Lazy Item</li>"));
+							$container.append($("<li>New Lazy Item</li>"));
 						}
 					});
 				});
@@ -313,10 +306,10 @@ $(document).ready(function() {
 			<small><b>Usage: </b></small><br />
 			<pre>
 $(document).ready(function() {
+	var $container = $("#lazyScrollLoading_WindowScrollToEnd");
 	$(window).lazyScrollLoading({
-		lazyItemSelector : "#lazyScrollLoading_WindowScrollToEnd > li",
 		onScrollToBottom : function(e, $lazyItems) {
-			$lazyItems.parent().append($("&#60;li&#62;New Lazy Item&#60;/li&#62;"));
+			$container.append($("&#60;li&#62;New Lazy Item&#60;/li&#62;"));
 		}
 	});
 });</pre>
@@ -326,13 +319,16 @@ $(document).ready(function() {
 	<!-- google-analytics -->
 	<script type="text/javascript">
 		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-28376808-3']);
-		_gaq.push(['_trackPageview']);
-	
+		_gaq.push([ '_setAccount', 'UA-28376808-3' ]);
+		_gaq.push([ '_trackPageview' ]);
+
 		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			var ga = document.createElement('script');
+			ga.type = 'text/javascript';
+			ga.async = true;
 			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ga, s);
 		})();
 	</script>
 </body>

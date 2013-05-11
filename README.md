@@ -3,6 +3,7 @@ jQueryLazyScrollLoading
 
 jQuery Lazy Scroll Loading Plugin
 
+http://plugins.jquery.com/jQueryLazyScrollLoading/
 http://code.google.com/p/jquerylazyscrollloading/
 
 Lazy loading event monitor for onScroll event.
