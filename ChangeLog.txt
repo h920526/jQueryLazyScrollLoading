@@ -1,5 +1,15 @@
 jQueryLazyScrollLoading Change Log
 
+Version 0.4.2
+====================
+．Add onLazyItemInvisible
+．Fix bug for jQuery 1.2
+．Change the trigger sequence between onLazyItemFirstVisible and onLazyItemVisible
+
+Version 0.4.1
+====================
+．Republish for git
+
 Version 0.4.0
 ====================
 ．Add onScroll, onScrollVertically, onScrollHorizontally, onScrollUp, onScrollDown, onScrollLeft, onScrollRight

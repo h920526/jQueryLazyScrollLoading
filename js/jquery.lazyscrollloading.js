@@ -26,6 +26,7 @@
 		onScroll : null,
 		onLazyItemFirstVisible : null,
 		onLazyItemVisible : null,
+		onLazyItemInvisible : null,
 		onScrollVertically : null,
 		onScrollHorizontally : null,
 		onScrollUp : null,
@@ -102,12 +103,15 @@
 		getLazyScrollLoadingViewport : function() {
 			var $container = this;
 			var container = $container[0];
+			var isRoot = isRootContainer(container);
 			var $window = $(window);
 			var $document = $(document);
-			var isRoot = isRootContainer(container);
-			var containerOffset = $container.offset();
+			var $body = $(document.body);
 			var containerScrollHistory = $container.getLazyScrollLoadingScrollHistory();
 			return {
+				getOffset : function() {
+					return (isRoot ? $body.offset() : $container.offset());
+				},
 				getScrollLeft : function() {
 					return (isRoot ? $window : $container).scrollLeft();
 				},
@@ -117,11 +121,11 @@
 				getScrollBindTarget : function() {
 					return (isRoot ? $document : $container);
 				},
-				getWidth : function(isOuterOrInner) {
-					return (isRoot ? $window.width() : (isOuterOrInner ? $container.outerWidth() : $container.innerWidth()));
+				getWidth : function(isOuter) {
+					return (isRoot ? $window.width() : (isOuter ? $container.outerWidth() : $container.innerWidth()));
 				},
-				getHeight : function(isOuterOrInner) {
-					return (isRoot ? $window.height() : (isOuterOrInner ? $container.outerHeight() : $container.innerHeight()));
+				getHeight : function(isOuter) {
+					return (isRoot ? $window.height() : (isOuter ? $container.outerHeight() : $container.innerHeight()));
 				},
 				getScrollWidth : function() {
 					return (isRoot ? $document.width() : container.scrollWidth);
@@ -130,10 +134,10 @@
 					return (isRoot ? $document.height() : container.scrollHeight);
 				},
 				getLeftPos : function() {
-					return (isRoot ? this.getScrollLeft() : containerOffset.left);
+					return (isRoot ? this.getScrollLeft() : this.getOffset().left);
 				},
 				getTopPos : function() {
-					return (isRoot ? this.getScrollTop() : containerOffset.top);
+					return (isRoot ? this.getScrollTop() : this.getOffset().top);
 				},
 				getRightPos : function() {
 					return this.getLeftPos() + this.getWidth(true);
@@ -259,7 +263,16 @@
 		 * @return boolean
 		 */
 		isLazyScrollLoadingLazyItemLoaded : function() {
-			return (this.data("isLoaded." + PLUGIN_NAMESPACE) === true);
+			return (this.data("isLoaded." + PLUGIN_NAMESPACE) == true);
+		},
+
+		/**
+		 * Public : Is lazy item loading
+		 * 
+		 * @return boolean
+		 */
+		isLazyScrollLoadingLazyItemLoading : function() {
+			return (this.data("isLoading." + PLUGIN_NAMESPACE) == true);
 		},
 
 		/**
@@ -323,17 +336,22 @@
 	function fireOnScrollEvent(e, $container, options, $lazyItems) {
 		var lazyItemVisibleArray = [];
 		var lazyItemFirstVisibleArray = [];
+		var lazyItemInvisibleArray = [];
 		if (options.lazyItemSelector) {
-			if (options.isDefaultLazyImageMode || options.onLazyItemFirstVisible || options.onLazyItemVisible) {
+			if (options.isDefaultLazyImageMode || options.onLazyItemFirstVisible || options.onLazyItemVisible || options.onLazyItemInvisible) {
 				$lazyItems.each(function() {
 					var $lazyItem = $(this);
 					/* is lazy item visible */
 					if ($lazyItem.isLazyScrollLoadingLazyItemVisible($container)) {
+						$lazyItem.data("isLoading." + PLUGIN_NAMESPACE, true);
 						lazyItemVisibleArray.push(this);
 						if (!$lazyItem.isLazyScrollLoadingLazyItemLoaded()) {
 							$lazyItem.data("isLoaded." + PLUGIN_NAMESPACE, true);
 							lazyItemFirstVisibleArray.push(this);
 						}
+					} else if ($lazyItem.isLazyScrollLoadingLazyItemLoading()) {
+						$lazyItem.removeData("isLoading." + PLUGIN_NAMESPACE);
+						lazyItemInvisibleArray.push(this);
 					}
 				});
 			}
@@ -345,13 +363,13 @@
 				}
 			}
 		}
-		triggerCustomizedOnScrollEvent(e, $container, options, $lazyItems, lazyItemVisibleArray, lazyItemFirstVisibleArray);
+		triggerCallbackFunctions(e, $container, options, $lazyItems, lazyItemVisibleArray, lazyItemFirstVisibleArray, lazyItemInvisibleArray);
 	}
 
 	/**
 	 * Private : Trigger Customized OnScroll Event
 	 */
-	function triggerCustomizedOnScrollEvent(e, $container, options, $lazyItems, lazyItemVisibleArray, lazyItemFirstVisibleArray) {
+	function triggerCallbackFunctions(e, $container, options, $lazyItems, lazyItemVisibleArray, lazyItemFirstVisibleArray, lazyItemInvisibleArray) {
 		var container = $container[0];
 		if (options.onScroll) {
 			options.onScroll.apply(container, [ e ]);
@@ -407,11 +425,14 @@
 			/* reset history */
 			$container.data("scrollHistory." + PLUGIN_NAMESPACE, newScrollHistory);
 		}
+		if (options.onLazyItemFirstVisible && lazyItemFirstVisibleArray.length > 0) {
+			options.onLazyItemFirstVisible.apply(container, [ e, $lazyItems, $container.pushStack(lazyItemFirstVisibleArray) ]);
+		}
 		if (options.onLazyItemVisible && lazyItemVisibleArray.length > 0) {
 			options.onLazyItemVisible.apply(container, [ e, $lazyItems, $container.pushStack(lazyItemVisibleArray) ]);
 		}
-		if (options.onLazyItemFirstVisible && lazyItemFirstVisibleArray.length > 0) {
-			options.onLazyItemFirstVisible.apply(container, [ e, $lazyItems, $container.pushStack(lazyItemFirstVisibleArray) ]);
+		if (options.onLazyItemInvisible && lazyItemInvisibleArray.length > 0) {
+			options.onLazyItemInvisible.apply(container, [ e, $lazyItems, $container.pushStack(lazyItemInvisibleArray) ]);
 		}
 	}
 

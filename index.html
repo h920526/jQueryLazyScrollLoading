@@ -75,10 +75,6 @@ ul {
 	box-shadow: 0 0 5px #888;
 }
 
-ul.notBox {
-	height: auto;
-}
-
 li.lazyItem {
 	height: 30px;
 }
@@ -99,7 +95,8 @@ li.lazyItem {
 	<br />
 	<br />
 	<small><a
-		href="https://code.google.com/p/jquerylazyscrollloading/">https://code.google.com/p/jquerylazyscrollloading/</a>
+		href="http://plugins.jquery.com/jQueryLazyScrollLoading/">http://plugins.jquery.com/jQueryLazyScrollLoading/</a>
+		<br /> <a href="https://code.google.com/p/jquerylazyscrollloading/">https://code.google.com/p/jquerylazyscrollloading/</a>
 	</small>
 	<br />
 	<br />
@@ -241,7 +238,7 @@ $(document).ready(function() {
 						},
 						onScrollToRightmost : function() {
 							$loger.append($("<div>on scroll to rightmost</div>"));
-						},
+						}
 					});
 				});
 			</script>
@@ -261,7 +258,7 @@ $(document).ready(function() {
 		},
 		onScrollToRightmost : function() {
 			$loger.append($("&#60;div&#62;on scroll to rightmost&#60;/div&#62;"));
-		},
+		}
 	});
 });</pre>
 		</div>
@@ -275,7 +272,7 @@ $(document).ready(function() {
 		<span class="legend" onclick="$(this).next().slideToggle('slow');">Simple
 			Demo: Window Scroll To End</span>
 		<div style="display: none;">
-			<ul id="lazyScrollLoading_WindowScrollToEnd" class="notBox">
+			<ul id="lazyScrollLoading_WindowScrollToEnd" style="height: auto;">
 				<li>Lazy Item</li>
 				<li>Lazy Item</li>
 				<li>Lazy Item</li>
