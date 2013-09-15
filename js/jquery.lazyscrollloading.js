@@ -43,6 +43,7 @@
 	var userAgentStr = navigator.userAgent.toLowerCase();
 	var isIE = /msie/.test(userAgentStr);
 	var IEVersion = (isIE ? parseFloat((userAgentStr.match(/.*(?:rv|ie)[\/: ](.+?)([ \);]|$)/) || [])[1]) : -1);
+	var scrollBarSize = 16;
 
 	/**
 	 * Public Method
@@ -58,7 +59,7 @@
 		lazyScrollLoading : function(options) {
 			options = $.extend({}, defaultOptions, options);
 			/* correct options */
-			if (options.isDefaultLazyImageMode && !options.lazyItemSelector) {
+			if (options.isDefaultLazyImageMode && options.lazyItemSelector == null) {
 				options.lazyItemSelector = "img[" + PLUGIN_LAZYIMAGE_ATTR + "]:not([src])";
 			}
 			/* starting */
@@ -71,7 +72,7 @@
 				/* initialize */
 				initializeLazyScrollLoading($container, options);
 				/* trigger event */
-				if (options.onCreate) {
+				if (options.onCreate != null) {
 					options.onCreate.apply($container[0]);
 				}
 			});
@@ -93,6 +94,15 @@
 		 */
 		getLazyScrollLoadingScrollHistory : function() {
 			return this.data("scrollHistory." + PLUGIN_NAMESPACE);
+		},
+
+		/**
+		 * Public : Clear container's scroll history
+		 * 
+		 * @return jQuery
+		 */
+		clearLazyScrollLoadingScrollHistory : function() {
+			return this.removeData("scrollHistory." + PLUGIN_NAMESPACE);
 		},
 
 		/**
@@ -127,11 +137,13 @@
 				getHeight : function(isOuter) {
 					return (isRoot ? $window.height() : (isOuter ? $container.outerHeight() : $container.innerHeight()));
 				},
-				getScrollWidth : function() {
-					return (isRoot ? $document.width() : container.scrollWidth);
+				getScrollWidth : function(includeScrollBarSize) {
+					/* -1: when root container scroll to the rightmost, it's scroll weight not corrected */
+					return (isRoot ? $document.width() : container.scrollWidth) + (includeScrollBarSize && this.isVerticalScrollBarVisible() ? scrollBarSize : (isRoot ? -1 : 0));
 				},
-				getScrollHeight : function() {
-					return (isRoot ? $document.height() : container.scrollHeight);
+				getScrollHeight : function(includeScrollBarSize) {
+					/* -1: when root container scroll to the bottom, it's scroll height not corrected */
+					return (isRoot ? $document.height() : container.scrollHeight) + (includeScrollBarSize && this.isHorizontalScrollBarVisible() ? scrollBarSize : (isRoot ? -1 : 0));
 				},
 				getLeftPos : function() {
 					return (isRoot ? this.getScrollLeft() : this.getOffset().left);
@@ -146,46 +158,46 @@
 					return this.getTopPos() + this.getHeight(true);
 				},
 				isVerticalScrollBarVisible : function() {
-					return (this.getHeight(false) < this.getScrollHeight());
+					return (this.getHeight(false) < this.getScrollHeight(false));
 				},
 				isHorizontalScrollBarVisible : function() {
-					return (this.getWidth(false) < this.getScrollWidth());
+					return (this.getWidth(false) < this.getScrollWidth(false));
 				},
 				isVerticalScrollBarScrolling : function() {
 					if (!this.isVerticalScrollBarVisible()) {
 						return false;
 					}
-					return (!containerScrollHistory || containerScrollHistory.scrollTop != this.getScrollTop());
+					return (containerScrollHistory != null && containerScrollHistory.scrollTop != this.getScrollTop());
 				},
 				isHorizontalScrollBarScrolling : function() {
 					if (!this.isHorizontalScrollBarVisible()) {
 						return false;
 					}
-					return (!containerScrollHistory || containerScrollHistory.scrollLeft != this.getScrollLeft());
+					return (containerScrollHistory != null && containerScrollHistory.scrollLeft != this.getScrollLeft());
 				},
 				isScrollUp : function() {
 					if (!this.isVerticalScrollBarVisible()) {
 						return false;
 					}
-					return (!containerScrollHistory || containerScrollHistory.scrollTop > this.getScrollTop());
+					return (containerScrollHistory != null && containerScrollHistory.scrollTop > this.getScrollTop());
 				},
 				isScrollDown : function() {
 					if (!this.isVerticalScrollBarVisible()) {
 						return false;
 					}
-					return (!containerScrollHistory || containerScrollHistory.scrollTop < this.getScrollTop());
+					return (containerScrollHistory != null && containerScrollHistory.scrollTop < this.getScrollTop());
 				},
 				isScrollLeft : function() {
 					if (!this.isHorizontalScrollBarVisible()) {
 						return false;
 					}
-					return (!containerScrollHistory || containerScrollHistory.scrollLeft > this.getScrollLeft());
+					return (containerScrollHistory != null && containerScrollHistory.scrollLeft > this.getScrollLeft());
 				},
 				isScrollRight : function() {
 					if (!this.isHorizontalScrollBarVisible()) {
 						return false;
 					}
-					return (!containerScrollHistory || containerScrollHistory.scrollLeft < this.getScrollLeft());
+					return (containerScrollHistory != null && containerScrollHistory.scrollLeft < this.getScrollLeft());
 				},
 				isScrollToTop : function() {
 					if (!this.isVerticalScrollBarVisible()) {
@@ -197,7 +209,7 @@
 					if (!this.isVerticalScrollBarVisible()) {
 						return false;
 					}
-					return (this.getScrollTop() >= this.getScrollHeight() - this.getHeight(false));
+					return (this.getScrollTop() + this.getHeight(false) >= this.getScrollHeight(true));
 				},
 				isScrollToLeftmost : function() {
 					if (!this.isHorizontalScrollBarVisible()) {
@@ -209,7 +221,7 @@
 					if (!this.isHorizontalScrollBarVisible()) {
 						return false;
 					}
-					return (this.getScrollLeft() >= this.getScrollWidth() - this.getWidth(false));
+					return (this.getScrollLeft() + this.getWidth(false) >= this.getScrollWidth(true));
 				}
 			};
 		},
@@ -217,27 +229,34 @@
 		/**
 		 * Public : Get container's cached lazy items
 		 * 
-		 * @param isReNew
-		 *            boolean
 		 * @param selector
 		 *            String
 		 * @return jQuery
 		 */
-		getLazyScrollLoadingCachedLazyItems : function(isReNew, selector) {
+		getLazyScrollLoadingCachedLazyItems : function(selector) {
 			return this.pushStack($.map(this, function(container) {
 				var $container = $(container);
 				var options = $container.getLazyScrollLoadingOptions();
 				var $lazyItems = $container.data("items." + PLUGIN_NAMESPACE);
-				if (options && options.lazyItemSelector && (isReNew || !$lazyItems)) {
+				if (options != null && options.lazyItemSelector != null && $lazyItems == null) {
 					/* cache lazy items if necessary */
 					$lazyItems = $(options.lazyItemSelector, (isRootContainer(container) ? undefined : $container));
 					$container.data("items." + PLUGIN_NAMESPACE, $lazyItems);
 				}
-				if ($lazyItems && selector) {
+				if ($lazyItems != null && selector != null) {
 					$lazyItems = $lazyItems.filter(selector);
 				}
 				return ($lazyItems != null ? $lazyItems.get() : null);
 			}));
+		},
+
+		/**
+		 * Public : Clear container's cached lazy items
+		 * 
+		 * @return jQuery
+		 */
+		clearLazyScrollLoadingCachedLazyItems : function() {
+			return this.removeData("items." + PLUGIN_NAMESPACE);
 		},
 
 		/**
@@ -253,7 +272,7 @@
 				$container.getLazyScrollLoadingViewport().getScrollBindTarget().unbind("scroll." + PLUGIN_NAMESPACE);
 				/* clear cache */
 				$container.getLazyScrollLoadingCachedLazyItems().removeData("isLoaded." + PLUGIN_NAMESPACE);
-				$container.removeData("items." + PLUGIN_NAMESPACE).removeData("scrollHistory." + PLUGIN_NAMESPACE).removeData("options." + PLUGIN_NAMESPACE);
+				$container.clearLazyScrollLoadingCachedLazyItems().clearLazyScrollLoadingScrollHistory().removeData("options." + PLUGIN_NAMESPACE);
 			});
 		},
 
@@ -263,7 +282,7 @@
 		 * @return boolean
 		 */
 		isLazyScrollLoadingLazyItemLoaded : function() {
-			return (this.data("isLoaded." + PLUGIN_NAMESPACE) == true);
+			return this.data("isLoaded." + PLUGIN_NAMESPACE);
 		},
 
 		/**
@@ -272,7 +291,7 @@
 		 * @return boolean
 		 */
 		isLazyScrollLoadingLazyItemLoading : function() {
-			return (this.data("isLoading." + PLUGIN_NAMESPACE) == true);
+			return this.data("isLoading." + PLUGIN_NAMESPACE);
 		},
 
 		/**
@@ -301,7 +320,6 @@
 	 * Private : Initialize LazyScrollLoading
 	 */
 	function initializeLazyScrollLoading($container, options) {
-		var $lazyItems = $container.getLazyScrollLoadingCachedLazyItems();
 		var containerViewport = $container.getLazyScrollLoadingViewport();
 		var $scrollBindTarget = containerViewport.getScrollBindTarget();
 		/* starting */
@@ -309,14 +327,14 @@
 		var timer = null;
 		$scrollBindTarget.bind("scroll." + PLUGIN_NAMESPACE, function(e) {
 			if (options.delay <= 0) {
-				fireOnScrollEvent(e, $container, options, $lazyItems);
+				fireOnScrollEvent(e, $container, options);
 			} else if (!isTimerOn) {
 				isTimerOn = true;
 				if (timer != null) {
 					clearTimeout(timer);
 				}
 				timer = setTimeout(function() {
-					fireOnScrollEvent(e, $container, options, $lazyItems);
+					fireOnScrollEvent(e, $container, options);
 					/* clear timer */
 					clearTimeout(timer);
 					isTimerOn = false;
@@ -333,12 +351,13 @@
 	/**
 	 * Private : Fire OnScroll Event
 	 */
-	function fireOnScrollEvent(e, $container, options, $lazyItems) {
+	function fireOnScrollEvent(e, $container, options) {
+		var $lazyItems = $container.getLazyScrollLoadingCachedLazyItems();
 		var lazyItemVisibleArray = [];
 		var lazyItemFirstVisibleArray = [];
 		var lazyItemInvisibleArray = [];
-		if (options.lazyItemSelector) {
-			if (options.isDefaultLazyImageMode || options.onLazyItemFirstVisible || options.onLazyItemVisible || options.onLazyItemInvisible) {
+		if (options.lazyItemSelector != null) {
+			if (options.isDefaultLazyImageMode || options.onLazyItemFirstVisible != null || options.onLazyItemVisible != null || options.onLazyItemInvisible != null) {
 				$lazyItems.each(function() {
 					var $lazyItem = $(this);
 					/* is lazy item visible */
@@ -357,7 +376,7 @@
 			}
 			/* lazy image mode */
 			if (options.isDefaultLazyImageMode) {
-				for ( var i = 0, lazyItemFirstVisibleArraySize = lazyItemFirstVisibleArray.length; i < lazyItemFirstVisibleArraySize; i++) {
+				for (var i = 0, lazyItemFirstVisibleArraySize = lazyItemFirstVisibleArray.length; i < lazyItemFirstVisibleArraySize; i++) {
 					var lazyImageItem = lazyItemFirstVisibleArray[i];
 					lazyImageItem.src = lazyImageItem.getAttribute(PLUGIN_LAZYIMAGE_ATTR);
 				}
@@ -371,11 +390,12 @@
 	 */
 	function triggerCallbackFunctions(e, $container, options, $lazyItems, lazyItemVisibleArray, lazyItemFirstVisibleArray, lazyItemInvisibleArray) {
 		var container = $container[0];
-		if (options.onScroll) {
+		if (options.onScroll != null) {
 			options.onScroll.apply(container, [ e ]);
 		}
 		/* trigger callback */
-		if (options.onScrollVertically || options.onScrollUp || options.onScrollDown || options.onScrollToTop || options.onScrollToBottom || options.onScrollHorizontally || options.onScrollLeft || options.onScrollRight || options.onScrollToLeftmost || options.onScrollToRightmost) {
+		if (options.onScrollVertically != null || options.onScrollUp != null || options.onScrollDown != null || options.onScrollToTop != null || options.onScrollToBottom != null || options.onScrollHorizontally != null || options.onScrollLeft != null || options.onScrollRight != null
+				|| options.onScrollToLeftmost != null || options.onScrollToRightmost != null) {
 			var containerViewport = $container.getLazyScrollLoadingViewport();
 			var scrollTop = containerViewport.getScrollTop();
 			var scrollLeft = containerViewport.getScrollLeft();
@@ -386,36 +406,36 @@
 			};
 			var defaultApplyParameter = [ e, $lazyItems ];
 			if (containerViewport.isVerticalScrollBarScrolling()) {
-				if (options.onScrollVertically) {
+				if (options.onScrollVertically != null) {
 					options.onScrollVertically.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollUp && containerViewport.isScrollUp()) {
+				if (options.onScrollUp != null && containerViewport.isScrollUp()) {
 					options.onScrollUp.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollDown && containerViewport.isScrollDown()) {
+				if (options.onScrollDown != null && containerViewport.isScrollDown()) {
 					options.onScrollDown.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollToTop && containerViewport.isScrollToTop()) {
+				if (options.onScrollToTop != null && containerViewport.isScrollToTop()) {
 					options.onScrollToTop.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollToBottom && containerViewport.isScrollToBottom()) {
+				if (options.onScrollToBottom != null && containerViewport.isScrollToBottom()) {
 					options.onScrollToBottom.apply(container, defaultApplyParameter);
 				}
 			}
 			if (containerViewport.isHorizontalScrollBarScrolling()) {
-				if (options.onScrollHorizontally) {
+				if (options.onScrollHorizontally != null) {
 					options.onScrollHorizontally.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollLeft && containerViewport.isScrollLeft()) {
+				if (options.onScrollLeft != null && containerViewport.isScrollLeft()) {
 					options.onScrollLeft.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollRight && containerViewport.isScrollRight()) {
+				if (options.onScrollRight != null && containerViewport.isScrollRight()) {
 					options.onScrollRight.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollToLeftmost && containerViewport.isScrollToLeftmost()) {
+				if (options.onScrollToLeftmost != null && containerViewport.isScrollToLeftmost()) {
 					options.onScrollToLeftmost.apply(container, defaultApplyParameter);
 				}
-				if (options.onScrollToRightmost && containerViewport.isScrollToRightmost()) {
+				if (options.onScrollToRightmost != null && containerViewport.isScrollToRightmost()) {
 					options.onScrollToRightmost.apply(container, defaultApplyParameter);
 				}
 			}
@@ -425,13 +445,13 @@
 			/* reset history */
 			$container.data("scrollHistory." + PLUGIN_NAMESPACE, newScrollHistory);
 		}
-		if (options.onLazyItemFirstVisible && lazyItemFirstVisibleArray.length > 0) {
+		if (options.onLazyItemFirstVisible != null && lazyItemFirstVisibleArray.length > 0) {
 			options.onLazyItemFirstVisible.apply(container, [ e, $lazyItems, $container.pushStack(lazyItemFirstVisibleArray) ]);
 		}
-		if (options.onLazyItemVisible && lazyItemVisibleArray.length > 0) {
+		if (options.onLazyItemVisible != null && lazyItemVisibleArray.length > 0) {
 			options.onLazyItemVisible.apply(container, [ e, $lazyItems, $container.pushStack(lazyItemVisibleArray) ]);
 		}
-		if (options.onLazyItemInvisible && lazyItemInvisibleArray.length > 0) {
+		if (options.onLazyItemInvisible != null && lazyItemInvisibleArray.length > 0) {
 			options.onLazyItemInvisible.apply(container, [ e, $lazyItems, $container.pushStack(lazyItemInvisibleArray) ]);
 		}
 	}
