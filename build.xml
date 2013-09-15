@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="jquery.lazyscrollloading" default="deploy" basedir=".">
 
-	<property name="version" value="0.4.2" />
+	<property name="version" value="0.4.3" />
 	<!-- Google Closure Compiler (http://code.google.com/p/closure-compiler/downloads/list) -->
-	<property name="compressorPath" location="../../ex_js/compiler-20130722/compiler.jar" />
+	<property name="compressorPath" location="../../ex_js/compiler-20130823/compiler.jar" />
 	<tstamp>
 		<format property="today" pattern="yyyy/MM/dd" />
 	</tstamp>
