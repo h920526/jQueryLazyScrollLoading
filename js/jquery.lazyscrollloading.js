@@ -138,11 +138,17 @@
 					return (isRoot ? $window.height() : (isOuter ? $container.outerHeight() : $container.innerHeight()));
 				},
 				getScrollWidth : function(includeScrollBarSize) {
-					/* -1: when root container scroll to the rightmost, it's scroll weight not corrected */
+					/*
+					 * -1: when root container scroll to the rightmost, it's
+					 * scroll weight not corrected
+					 */
 					return (isRoot ? $document.width() : container.scrollWidth) + (includeScrollBarSize && this.isVerticalScrollBarVisible() ? scrollBarSize : (isRoot ? -1 : 0));
 				},
 				getScrollHeight : function(includeScrollBarSize) {
-					/* -1: when root container scroll to the bottom, it's scroll height not corrected */
+					/*
+					 * -1: when root container scroll to the bottom, it's scroll
+					 * height not corrected
+					 */
 					return (isRoot ? $document.height() : container.scrollHeight) + (includeScrollBarSize && this.isHorizontalScrollBarVisible() ? scrollBarSize : (isRoot ? -1 : 0));
 				},
 				getLeftPos : function() {
@@ -257,6 +263,15 @@
 		 */
 		clearLazyScrollLoadingCachedLazyItems : function() {
 			return this.removeData("items." + PLUGIN_NAMESPACE);
+		},
+
+		/**
+		 * Public : Refresh container
+		 * 
+		 * @return jQuery
+		 */
+		refreshLazyScrollLoading : function() {
+			return this.clearLazyScrollLoadingCachedLazyItems();
 		},
 
 		/**

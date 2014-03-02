@@ -1,7 +1,5 @@
-jQueryLazyScrollLoading
-=======================
-
 jQuery Lazy Scroll Loading Plugin
+=======================
 
 Lazy loading event monitor for onScroll event.
 <br />

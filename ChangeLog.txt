@@ -1,5 +1,9 @@
 jQueryLazyScrollLoading Change Log
 
+Version -
+====================
+．Add method: refreshLazyScrollLoading
+
 Version 0.4.5
 ====================
 ．Fix bug for isScrollToBottom() and isScrollToRightmost()
