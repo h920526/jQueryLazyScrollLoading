@@ -13,3 +13,9 @@ Tested with: Chrome22+, IE6+, Firefox 16+, Opera 12+, Saferi 5+
 Demo: http://dl.dropbox.com/u/8316573/jquerylazyscrollloading/index.html
 <br />
 Download: https://github.com/h920526/jQueryLazyScrollLoading/releases
+
+See also:
+==========
+jQueryMultipleSelectBox: https://github.com/h920526/jQueryMultipleSelectBox
+<br />
+jDBMapLite: https://github.com/h920526/jDBMapLite
