@@ -372,24 +372,22 @@
 		var lazyItemVisibleArray = [];
 		var lazyItemFirstVisibleArray = [];
 		var lazyItemInvisibleArray = [];
-		if (options.lazyItemSelector != null) {
-			if (options.isDefaultLazyImageMode || options.onLazyItemFirstVisible != null || options.onLazyItemVisible != null || options.onLazyItemInvisible != null) {
-				$lazyItems.each(function() {
-					var $lazyItem = $(this);
-					/* is lazy item visible */
-					if ($lazyItem.isLazyScrollLoadingLazyItemVisible($container)) {
-						$lazyItem.data("isLoading." + PLUGIN_NAMESPACE, true);
-						lazyItemVisibleArray.push(this);
-						if (!$lazyItem.isLazyScrollLoadingLazyItemLoaded()) {
-							$lazyItem.data("isLoaded." + PLUGIN_NAMESPACE, true);
-							lazyItemFirstVisibleArray.push(this);
-						}
-					} else if ($lazyItem.isLazyScrollLoadingLazyItemLoading()) {
-						$lazyItem.removeData("isLoading." + PLUGIN_NAMESPACE);
-						lazyItemInvisibleArray.push(this);
+		if (options.lazyItemSelector != null && (options.isDefaultLazyImageMode || options.onLazyItemFirstVisible != null || options.onLazyItemVisible != null || options.onLazyItemInvisible != null)) {
+			$lazyItems.each(function() {
+				var $lazyItem = $(this);
+				/* is lazy item visible */
+				if ($lazyItem.isLazyScrollLoadingLazyItemVisible($container)) {
+					$lazyItem.data("isLoading." + PLUGIN_NAMESPACE, true);
+					lazyItemVisibleArray.push(this);
+					if (!$lazyItem.isLazyScrollLoadingLazyItemLoaded()) {
+						$lazyItem.data("isLoaded." + PLUGIN_NAMESPACE, true);
+						lazyItemFirstVisibleArray.push(this);
 					}
-				});
-			}
+				} else if ($lazyItem.isLazyScrollLoadingLazyItemLoading()) {
+					$lazyItem.removeData("isLoading." + PLUGIN_NAMESPACE);
+					lazyItemInvisibleArray.push(this);
+				}
+			});
 			/* lazy image mode */
 			if (options.isDefaultLazyImageMode) {
 				for (var i = 0, lazyItemFirstVisibleArraySize = lazyItemFirstVisibleArray.length; i < lazyItemFirstVisibleArraySize; i++) {
