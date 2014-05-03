@@ -14,13 +14,14 @@
 (function($) {
 	/* static variables */
 	var PLUGIN_NAMESPACE = "LazyScrollLoading";
-	var PLUGIN_LAZYIMAGE_ATTR = "lazy-img";
+	var PLUGIN_LAZYIMAGE_ATTR = "data-lazyimg";
 
 	/* default options */
 	var defaultOptions = {
 		isDefaultLazyImageMode : false,
 		lazyItemSelector : null,
 		delay : 500,
+		resetScrollBarPositionAfterEventTriggered : true,
 		/* callback function */
 		onCreate : null,
 		onScroll : null,
@@ -455,8 +456,10 @@
 				}
 			}
 			/* reset the scrollbar after event triggered */
-			$container.scrollTop(scrollTop);
-			$container.scrollLeft(scrollLeft);
+			if (options.resetScrollBarPositionAfterEventTriggered) {
+				$container.scrollTop(scrollTop);
+				$container.scrollLeft(scrollLeft);
+			}
 			/* reset history */
 			$container.data("scrollHistory." + PLUGIN_NAMESPACE, newScrollHistory);
 		}

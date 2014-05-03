@@ -124,31 +124,31 @@ li.lazyItem {
 			demo:</span>
 		<div>
 			<ul id="lazyScrollLoading">
-				<li class="lazyItem" lazy-text="Lazy Item 1">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 2">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 3">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 4">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 5">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 6">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 7">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 8">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 9">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 10">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 11">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 12">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 13">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 14">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 15">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 16">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 17">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 18">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 19">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 20">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 21">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 22">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 23">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 24">&nbsp;</li>
-				<li class="lazyItem" lazy-text="Lazy Item 25">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 1">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 2">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 3">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 4">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 5">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 6">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 7">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 8">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 9">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 10">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 11">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 12">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 13">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 14">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 15">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 16">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 17">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 18">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 19">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 20">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 21">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 22">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 23">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 24">&nbsp;</li>
+				<li class="lazyItem" data-lazytext="Lazy Item 25">&nbsp;</li>
 			</ul>
 			<br />
 			<script type="text/javascript">
@@ -157,7 +157,7 @@ li.lazyItem {
 						lazyItemSelector : ".lazyItem",
 						onLazyItemFirstVisible : function(e, $lazyItems, $firstVisibleLazyItems) {
 							$firstVisibleLazyItems.each(function() {
-								this.innerHTML = this.getAttribute("lazy-text");
+								this.innerHTML = this.getAttribute("data-lazytext");
 							});
 						}
 					});
@@ -170,7 +170,7 @@ $(document).ready(function() {
 		lazyItemSelector : ".lazyItem",
 		onLazyItemFirstVisible : function(e, $lazyItems, $firstVisibleLazyItems) {
 			$firstVisibleLazyItems.each(function() {
-				this.innerHTML = this.getAttribute("lazy-text");
+				this.innerHTML = this.getAttribute("data-lazytext");
 			});
 		}
 	});
@@ -185,15 +185,15 @@ $(document).ready(function() {
 	<fieldset>
 		<span class="legend"
 			onclick="$(this).next().slideToggle('slow');$('#lazyScrollLoading_ImageMode').trigger('scroll');">Simple
-			demo: Image mode <small>(copy attribute lazy-img into src)</small>
+			demo: Image mode <small>(copy attribute data-lazyimg into src)</small>
 		</span>
 		<div style="display: none;">
 			<ul id="lazyScrollLoading_ImageMode">
-				<li><img lazy-img="http://image_url_1" alt="Image1" /></li>
-				<li><img lazy-img="http://image_url_2" alt="Image2" /></li>
-				<li><img lazy-img="http://image_url_3" alt="Image3" /></li>
-				<li><img lazy-img="http://image_url_4" alt="Image4" /></li>
-				<li><img lazy-img="http://image_url_5" alt="Image5" /></li>
+				<li><img data-lazyimg="http://image_url_1" alt="Image1" /></li>
+				<li><img data-lazyimg="http://image_url_2" alt="Image2" /></li>
+				<li><img data-lazyimg="http://image_url_3" alt="Image3" /></li>
+				<li><img data-lazyimg="http://image_url_4" alt="Image4" /></li>
+				<li><img data-lazyimg="http://image_url_5" alt="Image5" /></li>
 			</ul>
 			<br />
 			<script type="text/javascript">

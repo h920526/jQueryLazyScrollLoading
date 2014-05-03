@@ -3,6 +3,8 @@ jQueryLazyScrollLoading Change Log
 Version -
 ====================
 ．Add method: refreshLazyScrollLoading
+．Add resetScrollBarPositionAfterEventTriggered
+．Change default attribute lazy-img to data-lazyimg
 
 Version 0.4.5
 ====================
