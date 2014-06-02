@@ -215,7 +215,7 @@
 						if (!this.isVerticalScrollBarVisible()) {
 							return false;
 						}
-						return (this.getScrollTop() + this.getHeight(false) >= this.getScrollHeight(!isIE));
+						return (this.getScrollTop() + this.getHeight(true) >= this.getScrollHeight(true));
 					},
 					"isScrollToLeftmost" : function() {
 						if (!this.isHorizontalScrollBarVisible()) {
@@ -227,7 +227,7 @@
 						if (!this.isHorizontalScrollBarVisible()) {
 							return false;
 						}
-						return (this.getScrollLeft() + this.getWidth(false) >= this.getScrollWidth(!isIE));
+						return (this.getScrollLeft() + this.getWidth(true) >= this.getScrollWidth(true));
 					}
 				};
 			}

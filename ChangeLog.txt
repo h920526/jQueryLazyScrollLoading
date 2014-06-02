@@ -1,5 +1,10 @@
 jQueryLazyScrollLoading Change Log
 
+Version 0.4.7
+====================
+．Fix bug for Firefox
+．Compatible with closure advance mode
+
 Version 0.4.6
 ====================
 ．Add method: refreshLazyScrollLoading
