@@ -1,4 +1,5 @@
 jQueryLazyScrollLoading Feature Request
 
 ====================
-1. 
+
+1. Not working when click zoom out and refresh the page and try to scroll.
