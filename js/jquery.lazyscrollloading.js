@@ -360,11 +360,8 @@
 				}, options.delay);
 			}
 		});
-		/* on first window loaded, for visible element only */
-		/* IE version < 9 would not be triggered the onscroll event */
-		if ((containerViewport.getScrollTop() <= 0 && containerViewport.getScrollLeft() <= 0) || (isIE && IEVersion < 9)) {
-			$scrollBindTarget.trigger("scroll." + PLUGIN_NAMESPACE);
-		}
+		/* Trigger scroll on init to immediately check elements for visibility */
+		$scrollBindTarget.trigger("scroll." + PLUGIN_NAMESPACE);
 	}
 
 	/**
