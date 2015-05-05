@@ -44,7 +44,7 @@
 	var userAgentStr = navigator.userAgent.toLowerCase();
 	var isIE = /msie/.test(userAgentStr);
 	var IEVersion = (isIE ? parseFloat((userAgentStr.match(/.*(?:rv|ie)[\/: ](.+?)([ \);]|$)/) || [])[1]) : -1);
-	var scrollBarSize = 16;
+	var defaultScrollBarSize = 16;
 
 	/**
 	 * Public Method
@@ -133,17 +133,23 @@
 					"getScrollBindTarget": function() {
 						return (isRoot ? $window : $container);
 					},
-					"getWidth": function(isOuter) {
-						return (isRoot ? $window.width() : (isOuter ? $container.outerWidth() : $container.innerWidth()));
+					"getOuterWidth": function(includeScrollBarSize) {
+						return (isRoot ? $window.width() : $container.outerWidth(true)) - this.getScrollbarWidth();
 					},
-					"getHeight": function(isOuter) {
-						return (isRoot ? $window.height() : (isOuter ? $container.outerHeight() : $container.innerHeight()));
+					"getOuterHeight": function(includeScrollBarSize) {
+						return (isRoot ? $window.height() : $container.outerHeight(true)) - this.getScrollbarHeight();
+					},
+					"getScrollbarWidth": function() {
+						return (isRoot ? defaultScrollBarSize : container.offsetWidth - container.clientWidth);
+					},
+					"getScrollbarHeight": function() {
+						return (isRoot ? defaultScrollBarSize : container.offsetHeight - container.clientHeight);
 					},
 					"getScrollWidth": function(includeScrollBarSize) {
-						return (isRoot ? $document.width() : container.scrollWidth) + (includeScrollBarSize && this.isVerticalScrollBarVisible() ? scrollBarSize : 0);
+						return (isRoot ? $document.width() : container.scrollWidth) + (includeScrollBarSize && this.isVerticalScrollBarVisible() ? this.getScrollbarWidth() : 0);
 					},
 					"getScrollHeight": function(includeScrollBarSize) {
-						return (isRoot ? $document.height() : container.scrollHeight) + (includeScrollBarSize && this.isHorizontalScrollBarVisible() ? scrollBarSize : 0);
+						return (isRoot ? $document.height() : container.scrollHeight) + (includeScrollBarSize && this.isHorizontalScrollBarVisible() ? this.getScrollbarHeight() : 0);
 					},
 					"getLeftPos": function() {
 						return (isRoot ? this.getScrollLeft() : this.getOffset().left);
@@ -152,16 +158,16 @@
 						return (isRoot ? this.getScrollTop() : this.getOffset().top);
 					},
 					"getRightPos": function() {
-						return this.getLeftPos() + this.getWidth(true);
+						return this.getLeftPos() + this.getOuterWidth(true);
 					},
 					"getBottomPos": function() {
-						return this.getTopPos() + this.getHeight(true);
+						return this.getTopPos() + this.getOuterHeight(true);
 					},
 					"isVerticalScrollBarVisible": function() {
-						return (this.getHeight(false) < this.getScrollHeight(false));
+						return (this.getOuterHeight(false) < this.getScrollHeight(false));
 					},
 					"isHorizontalScrollBarVisible": function() {
-						return (this.getWidth(false) < this.getScrollWidth(false));
+						return (this.getOuterWidth(false) < this.getScrollWidth(false));
 					},
 					"isVerticalScrollBarScrolling": function() {
 						if (!this.isVerticalScrollBarVisible()) {
@@ -215,7 +221,7 @@
 						if (!this.isVerticalScrollBarVisible()) {
 							return false;
 						}
-						return (this.getScrollTop() + this.getHeight(true) >= this.getScrollHeight(true));
+						return (this.getScrollTop() + this.getOuterHeight(true) >= this.getScrollHeight(false));
 					},
 					"isScrollToLeftmost": function() {
 						if (!this.isHorizontalScrollBarVisible()) {
@@ -227,7 +233,7 @@
 						if (!this.isHorizontalScrollBarVisible()) {
 							return false;
 						}
-						return (this.getScrollLeft() + this.getWidth(true) >= this.getScrollWidth(true));
+						return (this.getScrollLeft() + this.getOuterWidth(true) >= this.getScrollWidth(true));
 					}
 				};
 			}
@@ -269,6 +275,24 @@
 		},
 
 		/**
+		 * Public : Clear container's viewport
+		 * 
+		 * @return jQuery
+		 */
+		"clearLazyScrollLoadingViewport": function() {
+			return this.removeData("viewport." + PLUGIN_NAMESPACE);
+		},
+
+		/**
+		 * Public : Clear container's options
+		 * 
+		 * @return jQuery
+		 */
+		"clearLazyScrollLoadingOptions": function() {
+			return this.removeData("options." + PLUGIN_NAMESPACE);
+		},
+
+		/**
 		 * Public : Refresh container
 		 * 
 		 * @return jQuery
@@ -290,7 +314,7 @@
 				$container.getLazyScrollLoadingViewport().getScrollBindTarget().unbind("scroll." + PLUGIN_NAMESPACE);
 				/* clear cache */
 				$container.getLazyScrollLoadingCachedLazyItems().removeData("isLoaded." + PLUGIN_NAMESPACE);
-				$container.clearLazyScrollLoadingCachedLazyItems().clearLazyScrollLoadingScrollHistory().removeData("viewport." + PLUGIN_NAMESPACE).removeData("options." + PLUGIN_NAMESPACE);
+				$container.clearLazyScrollLoadingCachedLazyItems().clearLazyScrollLoadingScrollHistory().clearLazyScrollLoadingViewport().clearLazyScrollLoadingOptions();
 			});
 		},
 

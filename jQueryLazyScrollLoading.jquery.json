@@ -27,7 +27,8 @@
 		"load",
 		"lazyscroll",
 		"viewport",
-		"scrollviewport"
+		"scrollviewport",
+		"scroll"
 	],
 	"homepage": "http://code.google.com/p/jquerylazyscrollloading/",
 	"docs": "http://code.google.com/p/jquerylazyscrollloading/wiki/jQueryLazyScrollLoadingPluginDoc",
