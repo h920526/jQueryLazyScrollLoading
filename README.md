@@ -11,6 +11,7 @@ jQuery Lazy Scroll Loading Plugin
 Tested with: Chrome22+, IE6+, Firefox 16+, Opera 12+, Saferi 5+
 
 Download: https://github.com/h920526/jQueryLazyScrollLoading/releases
+<br />
 Demo: https://h920526.github.io/jQueryLazyScrollLoading/
 
 See also:
